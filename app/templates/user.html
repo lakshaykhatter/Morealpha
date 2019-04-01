@@ -23,7 +23,9 @@
         <tr valign="top">
             <td> {{ post.id }} </td> 
             <td> {{ post.author.username }}</td>
+            <td> {{ post.title }}</td>
             <td> {{ post.body }}</td>
+            <td> {{post.tickers}}</td>
         </tr>
     {% endfor %}
     </table>

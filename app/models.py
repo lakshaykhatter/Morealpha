@@ -1,4 +1,4 @@
-πfrom app import db, login
+from app import db, login
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -24,12 +24,19 @@ class User(UserMixin, db.Model):
 	def __repr__(self):
 		return "<User {}>".format(self.username)
 
+posts_tickers = db.Table('posts_tickers',
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
+    db.Column('ticker_id', db.Integer, db.ForeignKey('ticker.id'))
+)
+
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	body = db.Column(db.String(140))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
+	title = db.Column(db.String(200), index=True)
+	tickers = db.relationship("Ticker",secondary=posts_tickers, backref="posts")
+	
 	def __repr__(self):
 		return '<Post {}>'.format(self.body)
 
@@ -39,6 +46,8 @@ class Ticker(db.Model):
 	name = db.Column(db.String(200), index=True)
 	sector = db.Column(db.String(200),index=True)
 
+	def __repr__(self):
+		return '<Ticker: {}>'.format(self.name)
 
 @login.user_loader
 def load_user(id):
