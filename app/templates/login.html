@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for error in form.username.errors %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+{% endfor %}
+
+{% for error in form.password.errors %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+{% endfor %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+   {% for message in messages %}
+      <div  class="alert alert-danger" role="alert" >{{ message[1] }}</div>
+  {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+
+
+<div align="center">
+    <div class="col-md-4 jumbotron">
+        <h1>Sign In</h1><br>
+        <form class="form-label-group" action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.username.label }}<br>
+                {{ form.username(class="form-control") }}
+            </p>
+            <p>
+                {{ form.password.label }}<br>
+                {{ form.password(class="form-control") }}
+            </p>
+            <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+            <p>{{ form.submit(class="btn btn-primary") }}</p>
+        </form>
+    </div>
+</div>
+{% endblock %}
