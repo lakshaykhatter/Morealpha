@@ -17,15 +17,19 @@
       <th scope="col">#</th>
       <th scope="col">username</th>
       <th scope="col">body</th>
+      <th scope="col">body</th>
+      <th scope="col">body</th>
+      <th scope="col">body</th>
     </tr>
   </thead>
     	{% for post in posts %}
         <tr valign="top">
             <td> {{ post.id }} </td> 
-            <td> {{ post.author.username }}</td>
-            <td> {{ post.title }}</td>
-            <td> {{ post.body }}</td>
-            <td> {{post.tickers}}</td>
+            <td> {{ post.author.username }} </td>
+            <td> {{ post.title }} </td>
+            <td> {{ post.body }} </td>
+            <td> {{ post.tickers[0].symbol}} </td>
+            <td> {{ tickers.posts[0].title }} </td>
         </tr>
     {% endfor %}
     </table>
