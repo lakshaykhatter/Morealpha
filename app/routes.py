@@ -30,14 +30,6 @@ def login():
 		return redirect(next_page)
 	return render_template('login.html', title='Sign In', form=form)
 
-@app.route('/ticker/<ticker>')
-def ticker(ticker):
-	ticker = ticker.upper()
-	ticker = Ticker.query.filter_by(symbol=ticker).first_or_404()
-	posts = ticker.posts
-	return render_template('ticker.html', ticker=ticker, posts=posts)
-
-
 @app.route('/logout')
 @login_required
 def logout():
@@ -83,4 +75,13 @@ def edit_profile():
 		form.last_name.data = current_user.last_name
 
 	return render_template('edit_profile.html', title='Edit Profile', form=form)
+
+
+@app.route('/ticker/<ticker>')
+def ticker(ticker):
+	ticker = ticker.upper()
+	ticker = Ticker.query.filter_by(symbol=ticker).first_or_404()
+	posts = ticker.posts
+	return render_template('ticker.html', ticker=ticker, posts=posts)
+
 
