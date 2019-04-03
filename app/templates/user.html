@@ -2,36 +2,16 @@
 
 {% block content %}
     <table>
-        <tr valign="top">
-            <td><h1>{{ user.first_name }} {{ user.last_name }}</h1></td>
-        </tr>
-        <tr valign="top">
-            <td><h2>{{ user.about_me}}</h2></td>
-        </tr>
+
+    <div class="media">
+      <img class="rounded-circle account-img" src="{{image_file}}">
+      <div class="media-body">
+        <div class="container">
+          <h2 class="account-heading">{{user.first_name}} {{user.last_name}}</h2>
+          <p class="text-secondary">{{user.about_me}}</p>  
+        </div>
+
+      </div>
     </table>
     <hr>
-    
-    <table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">username</th>
-      <th scope="col">body</th>
-      <th scope="col">body</th>
-      <th scope="col">body</th>
-      <th scope="col">body</th>
-    </tr>
-  </thead>
-    	{% for post in posts %}
-        <tr valign="top">
-            <td> {{ post.id }} </td> 
-            <td> {{ post.author.username }} </td>
-            <td> {{ post.title }} </td>
-            <td> {{ post.body }} </td>
-            <td> {{ post.tickers[0].symbol}} </td>
-            <td> {{ tickers.posts[0].title }} </td>
-        </tr>
-    {% endfor %}
-    </table>
-    
 {% endblock %}

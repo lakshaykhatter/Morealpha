@@ -10,4 +10,12 @@
     <hr class="my-4">
     <a class="btn btn-primary btn-lg" href="{{url_for('login')}}" role="button">Learn more</a>
     </div>
-  {% endblock %}
+
+    <h1> Recent Posts </h1>
+    {% for post in posts %}
+    	{{ post.title }} <br>
+    	{{ post.author.first_name }} {{ post.author.last_name }} <br>
+    	{{ post.body }} <br>
+    {% endfor %}
+
+  {% endblock %}    

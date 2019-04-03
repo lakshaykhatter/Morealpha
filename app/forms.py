@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, FileField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+
 from app.models import User
 from app import db
 
@@ -19,6 +21,7 @@ class RegistrationForm(FlaskForm):
 	email = StringField('Email', validators=[DataRequired(), Email()])
 	password = PasswordField('Password', validators=[DataRequired()])
 	password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
+	picture = FileField('Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
 	submit = SubmitField('Register')
 
 	def validate_username(self, username):

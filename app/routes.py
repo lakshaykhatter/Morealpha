@@ -5,13 +5,17 @@ from app.forms import LoginForm, RegistrationForm, EditProfileForm
 from app.models import User, Post, Ticker
 from app import db
 from werkzeug.urls import url_parse
+import secrets
+from PIL import Image
+import os
 
 
 
 @app.route('/')
 @app.route('/index')
 def index():
-	return render_template("index.html")
+	posts = Post.query.order_by('timestamp').limit(10)
+	return render_template("index.html", posts=posts)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -36,13 +40,34 @@ def logout():
 	logout_user()
 	return redirect(url_for('index'))
 
+def save_picture(form_picture):
+	random_hex = secrets.token_hex(8)
+	_, f_ext = os.path.splitext(form_picture.filename)
+	picture_fn = random_hex + f_ext
+	picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+
+	output_size = (125, 125)
+	i = Image.open(form_picture)
+	i.thumbnail(output_size)
+	i.save(picture_path)
+
+	return picture_fn
+
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 	if current_user.is_authenticated:
 		return redirect(url_for('index'))
 	form = RegistrationForm()
 	if form.validate_on_submit():
-		user = User(username=form.username.data, email=form.email.data)
+		user = User(username=form.username.data, email=form.email.data, 
+				first_name=form.first_name.data, last_name=form.last_name.data)
+
+		if form.picture.data:
+			picture_file = save_picture(form.picture.data)
+			user.image_file = picture_file
+
 		user.set_password(form.password.data)
 		db.session.add(user)
 		db.session.commit()
@@ -56,7 +81,12 @@ def user(username):
 	user = User.query.filter_by(username=username).first_or_404()
 	posts = Post.query.filter_by(user_id=user.id)
 	tickers = Ticker.query.get(1)
-	return render_template('user.html', user=user, posts=posts, tickers=tickers)
+	if user.image_file:
+		image_file = url_for('static', filename='profile_pics/' + user.image_file)
+	else:
+		image_file = url_for('static', filename='profile_pics/default.png')
+
+	return render_template('user.html', user=user, posts=posts, tickers=tickers, image_file=image_file)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
@@ -75,6 +105,9 @@ def edit_profile():
 		form.last_name.data = current_user.last_name
 
 	return render_template('edit_profile.html', title='Edit Profile', form=form)
+
+
+
 
 
 @app.route('/ticker/<ticker>')

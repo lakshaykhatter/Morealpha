@@ -13,6 +13,8 @@ class User(UserMixin, db.Model):
 	first_name = db.Column(db.String(120), index=True)
 	last_name = db.Column(db.String(120), index=True)
 	about_me = db.Column(db.String(1000))
+	image_file = db.Column(db.String(200), default='default.png')
+
 
 
 	def set_password(self, password):
