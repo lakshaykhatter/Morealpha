@@ -3,6 +3,11 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
+users_tickers = db.Table('users_tickers',
+	db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+	db.Column('ticker_id', db.Integer, db.ForeignKey('ticker.id'))
+	)
+
 
 class User(UserMixin, db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -14,8 +19,7 @@ class User(UserMixin, db.Model):
 	last_name = db.Column(db.String(120), index=True)
 	about_me = db.Column(db.String(1000))
 	image_file = db.Column(db.String(200), default='default.png')
-
-
+	tickers = db.relationship("Ticker", secondary=users_tickers, backref="users")
 
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)
