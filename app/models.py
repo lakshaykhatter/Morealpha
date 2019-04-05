@@ -59,6 +59,7 @@ class Ticker(db.Model):
 	symbol = db.Column(db.String(5), index=True)
 	name = db.Column(db.String(200), index=True)
 	sector = db.Column(db.String(200),index=True)
+	exchange = db.Column(db.String(200), index=True)
 
 	def __repr__(self):
 		return '<Ticker: {}>'.format(self.name)
