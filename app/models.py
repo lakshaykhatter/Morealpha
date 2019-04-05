@@ -30,6 +30,10 @@ class User(UserMixin, db.Model):
 	def followTicker(self, ticker):
 		if ticker not in self.tickers:
 			self.tickers.append(ticker)
+
+	def unfollowTicker(self, ticker):
+		if ticker in self.tickers:
+			self.tickers.remove(ticker)
 	
 	def __repr__(self):
 		return "<User {}>".format(self.username)

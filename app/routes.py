@@ -129,6 +129,13 @@ def followTicker(ticker):
 	db.session.commit()
 	return redirect(url_for('ticker', ticker=ticker.symbol))
 
+@app.route('/unfollow/<ticker>')
+@login_required
+def unfollowTicker(ticker):
+	ticker = Ticker.query.filter_by(symbol=ticker).first()
+	current_user.unfollowTicker(ticker)
+	db.session.commit()
+	return redirect(url_for('ticker', ticker=ticker.symbol))
 
 
 

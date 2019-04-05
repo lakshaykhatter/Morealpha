@@ -7,6 +7,14 @@
     <p class="lead">{{ticker.name}}</p>
     <p> {{ticker.symbol}}</p>      
     <p> {{ticker.sector }}</p>
+
+    {% if ticker in current_user.tickers %}
+    <a href="/unfollow/{{ticker.symbol}}" class="btn btn-outline-primary">Remove from watchlist</a>  
+    {% else %}
+    <a href="/follow/{{ticker.symbol}}" class="btn btn-outline-primary">add to watchlist</a>
+    {% endif %}
+
+
   </dt>
   <dt class="col-sm-9">
     <p class="lead"> Articles </p>
