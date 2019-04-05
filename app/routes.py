@@ -81,7 +81,7 @@ def user(username):
 	user = User.query.filter_by(username=username).first_or_404()
 	posts = Post.query.filter_by(user_id=user.id).limit(5).all()
 	posts = None if posts == [] else posts
-	tickers = Ticker.query.all()[0:50]
+	tickers = user.tickers
 
 	if user.image_file:
 		image_file = url_for('static', filename='profile_pics/' + user.image_file)
@@ -114,5 +114,24 @@ def ticker(ticker):
 	ticker = Ticker.query.filter_by(symbol=ticker).first_or_404()
 	posts = ticker.posts
 	return render_template('ticker.html', ticker=ticker, posts=posts)
+
+@app.route('/post/<post>')
+def post(post):
+	post = Post.query.get(post)
+	return render_template("post.html", post=post)
+
+
+@app.route('/follow/<ticker>')
+@login_required
+def followTicker(ticker):
+	ticker = Ticker.query.filter_by(symbol=ticker).first()
+	current_user.followTicker(ticker)
+	db.session.commit()
+	return redirect(url_for('ticker', ticker=ticker.symbol))
+
+
+
+
+
 
 

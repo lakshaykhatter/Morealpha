@@ -26,6 +26,10 @@ class User(UserMixin, db.Model):
 
 	def check_password(self, password):
 		return check_password_hash(self.password_hash, password)
+
+	def followTicker(self, ticker):
+		if ticker not in self.tickers:
+			self.tickers.append(ticker)
 	
 	def __repr__(self):
 		return "<User {}>".format(self.username)
