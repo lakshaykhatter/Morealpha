@@ -1,26 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-	
+
+<script type = "text/javascript" src = "{{ url_for('static', filename = 'js/ticker.js') }}" ></script>
+ 
+
+
 <dl class="row">
   <dt class="col-sm-3">
     <p class="lead">{{ticker.name}}</p>
     <p> {{ticker.symbol}}</p>      
     <p> {{ticker.sector }}</p>
-
-    {% if ticker in current_user.tickers %}
-    <a href="/unfollow/{{ticker.symbol}}" class="btn btn-outline-primary">Remove from watchlist</a>  
-    {% else %}
-    <a href="/follow/{{ticker.symbol}}" class="btn btn-outline-primary">add to watchlist</a>
-    {% endif %}
+    <p> {{ticker.exchange.upper() }}</p>
 
 
+    {% if ticker not in current_user.tickers %}
+        <a id="followButton"  href="{{url_for('followTicker', ticker=ticker.symbol)}}"class="btn btn-outline-primary">Add to watchlist</a>  
+      {% else %}
+        <a id="unfollowButton" href="{{url_for('unfollowTicker', ticker=ticker.symbol)}}" class="btn btn-outline-primary">Remove from watchlist</a>  
+      {% endif %}
+      
+    
   </dt>
   <dt class="col-sm-9">
     <p class="lead"> Articles </p>
       {% if posts != None %}
 	{% for post in posts %}
-	<div class="p-4 mb-3 bg-light rounded"> 
+	<div class="p-4 mb-3 bg-light rounded" > 
 		<h2 class="blog-post-title"><a href="{{url_for('post', post=post.id)}}">{{post.title}}</a></h2>
 		<p class="blog-post-meta">{{ post.timestamp.strftime('%Y-%m-%d')}} by <a href="{{ url_for('user', username=post.author.username)}}">{{post.author.first_name}} {{post.author.last_name}}</a></p>
 		{% for ticker in post.tickers %}
@@ -35,4 +41,13 @@
     {% endif %}
   </dt>
 </dl>
-	{% endblock %}
+
+
+
+	{% endblock %}    
+
+  {% if ticker not in current_user.tickers %}
+        <a id="followButton" href="/follow/{{ticker.symbol}}" class="btn btn-outline-primary">Add to watchlist</a>  
+      {% else %}
+        <a id="unfollowButton" href="/unfollow/{{ticker.symbol}}" class="btn btn-outline-primary">Remove from watchlist</a>  
+      {% endif %}

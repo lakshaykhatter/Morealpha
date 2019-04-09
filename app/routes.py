@@ -10,7 +10,6 @@ from PIL import Image
 import os
 
 
-
 @app.route('/')
 @app.route('/index')
 def index():
@@ -115,6 +114,10 @@ def ticker(ticker):
 	posts = ticker.posts
 	return render_template('ticker.html', ticker=ticker, posts=posts)
 
+@app.route('/post', methods=["GET", "POST"])
+def createpost():
+	return render_template('createPost.html')
+
 @app.route('/post/<post>')
 def post(post):
 	post = Post.query.get(post)
@@ -126,7 +129,7 @@ def post(post):
 def followTicker(ticker):
 	ticker = Ticker.query.filter_by(symbol=ticker).first()
 	current_user.followTicker(ticker)
-	db.session.commit()
+	db.session.commit()	
 	return redirect(url_for('ticker', ticker=ticker.symbol))
 
 @app.route('/unfollow/<ticker>')
@@ -138,7 +141,15 @@ def unfollowTicker(ticker):
 	return redirect(url_for('ticker', ticker=ticker.symbol))
 
 
-
-
-
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
