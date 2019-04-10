@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app
 from flask_login import current_user, login_user, logout_user, login_required
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
 from app.models import User, Post, Ticker
 from app import db
 from werkzeug.urls import url_parse
@@ -116,7 +116,8 @@ def ticker(ticker):
 
 @app.route('/post', methods=["GET", "POST"])
 def createpost():
-	return render_template('createPost.html')
+	form = PostForm()	
+	return render_template('createPost.html', form=form)
 
 @app.route('/post/<post>')
 def post(post):

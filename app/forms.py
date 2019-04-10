@@ -2,7 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, FileField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-
 from app.models import User
 from app import db
 
@@ -41,5 +40,6 @@ class EditProfileForm(FlaskForm):
 	submit = SubmitField('Submit')
 
 class PostForm(FlaskForm):
-	post = TextAreaField(('Say something'), validators=[DataRequired()])
+	title = TextAreaField("Title", validators=[DataRequired()])
+	body = TextAreaField('Please, create a post', validators=[DataRequired()])
 	submit = SubmitField('Submit')
