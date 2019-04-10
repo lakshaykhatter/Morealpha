@@ -45,10 +45,10 @@ posts_tickers = db.Table('posts_tickers',
 
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	body = db.Column(db.String(140))
+	body = db.Column(db.Text)
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-	title = db.Column(db.String(200), index=True)
+	title = db.Column(db.Text, index=True)
 	tickers = db.relationship("Ticker",secondary=posts_tickers, backref="posts")
 	
 	def __repr__(self):
