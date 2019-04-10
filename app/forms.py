@@ -5,6 +5,9 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from app.models import User
 from app import db
 
+#testing git push
+class Testing(FlaskForm):
+	username = StringField('Username', validators=[DataRequired(message="Please enter your username")])
 
 class LoginForm(FlaskForm):
 	username = StringField('Username', validators=[DataRequired(message="Please enter your username")])
