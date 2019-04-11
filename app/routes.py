@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app
 from flask_login import current_user, login_user, logout_user, login_required
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
@@ -114,10 +114,53 @@ def ticker(ticker):
 	posts = ticker.posts
 	return render_template('ticker.html', ticker=ticker, posts=posts)
 
+
+def checkTickers(tickers):
+	tickerObjects = []
+	for ticker in tickers:
+		tick = Ticker.query.filter_by(symbol=ticker.upper()).first()
+		if tick != None:
+			tickerObjects.append(tick)
+	return tickerObjects
+
+
+
 @app.route('/post', methods=["GET", "POST"])
+@login_required
 def createpost():
-	form = PostForm()	
-	return render_template('createPost.html', form=form)
+	if request.method == "POST":
+		
+		title = request.form['title']
+		body = request.form['post']
+		ticker1 = request.form['ticker1']
+		ticker2 = request.form['ticker2']
+		ticker3 = request.form['ticker3']
+		ticker4 = request.form['ticker4']
+		ticker5 = request.form['ticker5']
+
+		tickers = [ticker1, ticker2, ticker3, ticker4, ticker5]
+		tickers = checkTickers(tickers)
+		if title == "":
+			return jsonify({'error': "Please add a title"}) 
+		elif ticker1 == "" or tickers==[]:
+			return jsonify({'error': "Please enter a valid ticker at the first input"})
+		elif body == "":
+			return jsonify({'error': "Please create a post"})
+
+		p = Post()
+		p.title = title
+		p.body = body
+		p.user_id = current_user.id
+
+		for tick in tickers:
+			p.tickers.append(tick)
+		db.session.add(p)
+		db.session.commit()
+
+
+		return jsonify({'success': "Congratulations you've created a post"})
+
+	return render_template('createpost.html')
 
 @app.route('/post/<post>')
 def post(post):
