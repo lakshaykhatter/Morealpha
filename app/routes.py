@@ -139,10 +139,12 @@ def createpost():
 		ticker5 = request.form['ticker5']
 
 		tickers = [ticker1, ticker2, ticker3, ticker4, ticker5]
+		
 		tickers = checkTickers(tickers)
+
 		if title == "":
 			return jsonify({'error': "Please add a title"}) 
-		elif ticker1 == "" or tickers==[]:
+		elif ticker1 == "" or tickers == []:
 			return jsonify({'error': "Please enter a valid ticker at the first input"})
 		elif body == "":
 			return jsonify({'error': "Please create a post"})
@@ -154,6 +156,7 @@ def createpost():
 
 		for tick in tickers:
 			p.tickers.append(tick)
+
 		db.session.add(p)
 		db.session.commit()
 
@@ -183,17 +186,3 @@ def unfollowTicker(ticker):
 	current_user.unfollowTicker(ticker)
 	db.session.commit()
 	return redirect(url_for('ticker', ticker=ticker.symbol))
-
-
-@app.after_request
-def add_header(r):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    r.headers["Pragma"] = "no-cache"
-    r.headers["Expires"] = "0"
-    r.headers['Cache-Control'] = 'public, max-age=0'
-    return r
-

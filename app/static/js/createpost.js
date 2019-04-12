@@ -9,6 +9,7 @@ $( document ).ready(function() {
 		for ( i=0; i < el.length; i++ ) {
 			div.appendChild(el[i]);
 		}
+
 		$.ajax({
 			data : {
 				title : $("#title").val(),
@@ -24,6 +25,7 @@ $( document ).ready(function() {
 			type : 'POST',
 			url : '/post'
 		})
+		
 		.done(function(data) {
 
 			if (data.error) {
