@@ -43,13 +43,15 @@
               {% endfor %}
           </div>
           <p class="card-text mb-auto"><a href="{{ url_for('user', username=post.author.username)}}">{{post.author.first_name}} {{post.author.last_name}}<a> </p>
+
+          {% if not current_user.is_anonymous %}
           <p>      {% if current_user.has_liked_post(post) %}
          <h6> <a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a> </h6>
-      {% else %}
+               {% else %}
            <h6><a href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a></h6>
-      {% endif %}  {{ post.likes.count() }} likes    
-  </p>
-
+                 {% endif %}  {{ post.likes.count() }} likes    
+          </p>
+          {%endif%}
         </div>
       </div>
 
