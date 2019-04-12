@@ -7,7 +7,7 @@
 <div class="nav-scroller py-1 mb-2">
     <nav class="nav d-flex justify-content-between">
         {% for sector in sectors %}
-      <a class="p-2 text-muted" href="#">{{sector[0]}}</a>
+      <a class="p-2 text-muted" href="#">{{ sector[0] }}</a>
        {% endfor %}
     </nav>
   </div>
@@ -26,6 +26,8 @@
 
 
     {% for post in posts %}
+
+
     <div class="col-md-6">
 
       <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
@@ -40,7 +42,14 @@
               <a href="{{url_for('ticker', ticker=ticker.symbol)}}" class="badge badge-light">{{ticker.symbol}}</a>                
               {% endfor %}
           </div>
-          <p class="card-text mb-auto"><a href="{{ url_for('user', username=post.author.username)}}">{{post.author.first_name}} {{post.author.last_name}}<a></p>
+          <p class="card-text mb-auto"><a href="{{ url_for('user', username=post.author.username)}}">{{post.author.first_name}} {{post.author.last_name}}<a> </p>
+          <p>      {% if current_user.has_liked_post(post) %}
+         <h6> <a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a> </h6>
+      {% else %}
+           <h6><a href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a></h6>
+      {% endif %}  {{ post.likes.count() }} likes    
+  </p>
+
         </div>
       </div>
 

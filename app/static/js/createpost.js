@@ -31,10 +31,12 @@ $( document ).ready(function() {
 			if (data.error) {
 				$('#errorAlert').text(data.error).show();
 				$('#successAlert').hide();
+				$('.ql-editor').appendChild(div.innerHTML);
 			}
 			else {
 				$('#successAlert').text(data.success).show();
 				$('#errorAlert').hide();
+				$('.ql-editor').appendChild(div.innerHTML);
 			}
 
 		});
