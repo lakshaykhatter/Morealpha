@@ -15,12 +15,26 @@
         <!-- Author -->
         <p class="lead">
           by <a href="{{ url_for('user', username=post.author.username)}}">{{post.author.first_name}} {{post.author.last_name}} </a>
-        </p>
+          </p>
 
 	    <div>   {% for ticker in post.tickers %}
  	    	<a href="{{url_for('ticker', ticker=ticker.symbol)}}" class="badge badge-light">{{ticker.symbol}}</a> 
 	    		{% endfor %}
+
 		</div>
+      {% if not current_user.is_anonymous %}
+          <p>
+            {% if current_user.has_liked_post(post) %}
+            <h6> <a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a> - {{ post.likes.count() }} likes  </h6>
+      
+       
+       {% else %}
+
+              <h6> <a href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a> - {{ post.likes.count() }} likes  </h6>
+       
+           {% endif %}  
+          </p>
+    {%endif%}
         <hr>
 
         <!-- Date/Time -->
@@ -29,7 +43,7 @@
 
 
         <hr>
-			<p>{{post.body | safe }}</p>
+			   {{post.body | safe }}
         <hr>
 
 

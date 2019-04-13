@@ -7,16 +7,17 @@
 {% endfor %}
 
 	{% if not current_user.is_anonymous %}
-          <p>{% if current_user.has_liked_post(likedpost.post) %}
-         	<h6> <a href="{{ url_for('like_action', post_id=likedpost.post.id, action='unlike') }}">Unlike</a> </h6>
+          <p>
+          	{% if current_user.has_liked_post(likedpost.post) %}
+         		<h6> <a href="{{ url_for('like_action', post_id=likedpost.post.id, action='unlike') }}">Unlike</a> </h6>
 			{{ likedpost.post.likes.count() }} likes  
+			 
 			 {% else %}
 
-           	<h6> <a href="{{ url_for('like_action', post_id=likedpost.post.id, action='like') }}">Like</a> </h6>
+           		<h6> <a href="{{ url_for('like_action', post_id=likedpost.post.id, action='like') }}">Like</a> </h6>
 			{{ likedpost.post.likes.count() }} likes   
            {% endif %}  
-			
           </p>
-        {%endif%}
+    {%endif%}
 
 </div><hr>

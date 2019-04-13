@@ -31,15 +31,13 @@
                     {% include '_post.html' %}
                   <hr>
                 {% endfor %}
-                <p class="lead"> Liked </p>
-                {% for likedpost in current_user.liked %}  
-                    {% include '_likedpost.html' %}
-                {% endfor %}
-
-
             {% else %}
               <div class="p-4 mb-3 bg-light rounded"> {{user.first_name}} hasn't created any posts</div>
             {% endif %}
+              <p class="lead"> Liked </p>
+                {% for likedpost in user.liked %}  
+                    {% include '_likedpost.html' %}
+                {% endfor %}
           </dt>
         </dl>
 {% endblock %}

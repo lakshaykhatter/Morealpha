@@ -27,6 +27,7 @@
       {% if posts != None %}
       	{% for post in posts %}
           {% include '_post.html' %}
+          <hr>
 	      {% endfor %}
     {% else %}
       <div class="p-4 mb-3 bg-light rounded"> {{current_user.first_name}} hasn't created any posts
