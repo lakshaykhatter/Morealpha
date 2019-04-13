@@ -103,7 +103,6 @@ def edit_profile():
 		form.about_me.data = current_user.about_me
 		form.first_name.data = current_user.first_name
 		form.last_name.data = current_user.last_name
-
 	return render_template('edit_profile.html', title='Edit Profile', form=form)
 
 
@@ -167,7 +166,7 @@ def createpost():
 
 @app.route('/post/<post>')
 def post(post):
-	post = Post.query.get(post)
+	post = Post.query.filter_by(id=post).first_or_404()
 	return render_template("post.html", post=post)
 
 
