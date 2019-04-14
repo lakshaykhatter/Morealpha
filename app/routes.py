@@ -198,3 +198,45 @@ def like_action(post_id, action):
 		db.session.commit()
 	return redirect(request.referrer)
 
+
+@app.route('/followuser/<username>')
+@login_required
+def followuser(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('User {} not found.'.format(username))
+        return redirect(url_for('index'))
+    if user == current_user:
+        flash('You cannot follow yourself!')
+        return redirect(url_for('user', username=username))
+    current_user.follow(user)
+    db.session.commit()
+    flash('You are following {}!'.format(username))
+    return redirect(url_for('user', username=username))
+
+@app.route('/unfollowuser/<username>')
+@login_required
+def unfollowuser(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('User {} not found.'.format(username))
+        return redirect(url_for('index'))
+    if user == current_user:
+        flash('You cannot unfollow yourself!')
+        return redirect(url_for('user', username=username))
+    current_user.unfollow(user)
+    db.session.commit()
+    flash('You are not following {}.'.format(username))
+    return redirect(url_for('user', username=username))
+
+
+@app.route('/user/<username>/<action>')
+@login_required
+def followLookup(username, action):
+	user = User.query.filter_by(username=username).first_or_404()
+	if action == "following":
+		return render_template('follow.html', action=action, user=user)
+	elif action == "followers":
+		return render_template('follow.html', action=action, user=user)
+
+

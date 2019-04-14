@@ -12,6 +12,7 @@
     <p> {{ticker.symbol}}</p>      
     <p> {{ticker.sector }}</p>
     <p> {{ticker.exchange.upper() }}</p>
+    <p> Followers: {{ ticker.users | length }}</p>
 
 
     {% if ticker not in current_user.tickers %}
@@ -39,9 +40,3 @@
 
 
 	{% endblock %}    
-
-  {% if ticker not in current_user.tickers %}
-        <a id="followButton" href="/follow/{{ticker.symbol}}" class="btn btn-outline-primary">Add to watchlist</a>  
-      {% else %}
-        <a id="unfollowButton" href="/unfollow/{{ticker.symbol}}" class="btn btn-outline-primary">Remove from watchlist</a>  
-      {% endif %}

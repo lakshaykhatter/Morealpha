@@ -8,6 +8,10 @@ users_tickers = db.Table('users_tickers',
 	db.Column('ticker_id', db.Integer, db.ForeignKey('ticker.id'))
 	)
 
+followers = db.Table('followers',
+	db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+	db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
+)
 
 class User(UserMixin, db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -21,7 +25,7 @@ class User(UserMixin, db.Model):
 	image_file = db.Column(db.String(200), default='default.png')
 	tickers = db.relationship("Ticker", secondary=users_tickers, backref="users")
 	liked = db.relationship('PostLike',foreign_keys='PostLike.user_id',backref='user', lazy='dynamic')
-
+	followed = db.relationship('User', secondary=followers, primaryjoin=(followers.c.follower_id == id), secondaryjoin=(followers.c.followed_id == id), backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)
@@ -53,14 +57,34 @@ class User(UserMixin, db.Model):
 			PostLike.user_id == self.id,
 			PostLike.post_id == post.id).count() > 0
 	
+	def follow(self, user):
+		if not self.is_following(user):
+			self.followed.append(user)
+
+	def unfollow(self, user):
+		if self.is_following(user):
+			self.followed.remove(user)
+
+	def is_following(self, user):
+		return self.followed.filter(
+			followers.c.followed_id == user.id).count() > 0
+
+	def followed_posts(self):
+		followed = Post.query.join(
+			followers, (followers.c.followed_id == Post.user_id)).filter(
+				followers.c.follower_id == self.id)
+		own = Post.query.filter_by(user_id=self.id)
+		return followed.union(own).order_by(Post.timestamp.desc())
+
+
 	def __repr__(self):
 		return "<User {}>".format(self.username)
 
 class PostLike(db.Model):
-    __tablename__ = 'post_like'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+	__tablename__ = 'post_like'
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 
 
 posts_tickers = db.Table('posts_tickers',

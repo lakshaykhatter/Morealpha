@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if action == "following" %}
+	<h1> Following </h1>
+	<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Username</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for user in user.followed %}
+    <tr>
+      <td>{{user.first_name}} {{user.last_name}}</td>
+      <td><a href="{{url_for('user', username=user.username)}}">{{user.username}}</a></td>
+
+      {% if not current_user.is_following(user)%}
+      	<td><p><a class="btn btn-primary" href="{{ url_for('followuser', username=user.username) }}">Follow</a></p></td>
+      	{% else %}
+      	 <td><p><a class="btn btn-primary" href="{{ url_for('unfollowuser', username=user.username) }}">Unfollow</a></p>
+  	 	</td>
+	  {% endif %}
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% elif action == "followers" %}
+	<h1> Followers </h1>
+	<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Username</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for user in user.followers %}
+    <tr>
+      <td>{{user.first_name}} {{user.last_name}}</td>
+      <td><a href="{{url_for('user', username=user.username)}}">{{user.username}}</a></td>
+      {% if user != current_user %}  
+	      {% if not current_user.is_following(user)%}
+	      	<td><p><a class="btn btn-primary" href="{{ url_for('followuser', username=user.username) }}">Follow</a></p></td>
+	      	{% else %}
+	      	 <td><p><a class="btn btn-primary" href="{{ url_for('unfollowuser', username=user.username) }}">Unfollow</a></p>
+	  	 	</td>
+		  {% endif %}
+	  {% endif %}
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+
+{% endif %}
+
+{% endblock %}
