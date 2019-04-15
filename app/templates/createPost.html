@@ -2,6 +2,12 @@
 
 {% block content %}
 
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.css" />
+
 <script type = "text/javascript" src = "{{ url_for('static', filename = 'js/createpost.js') }}" ></script>
 
   <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
@@ -17,11 +23,7 @@
 
   <div class="card-body"> <h5>Tickers </h5>
     <div class="form-row">
-        <div class="mb-2 mr-sm-2"> <input class="form-control " id="ticker1" placeholder="FB"> </div>
-         <div class="mb-2 mr-sm-2"> <input class="form-control" id="ticker2" placeholder="NFLX"> </div>
-         <div class="mb-2 mr-sm-2"> <input class="form-control " id="ticker3" placeholder="AMZN"> </div>
-         <div class="mb-2 mr-sm-2"> <input class="form-control" id="ticker4" placeholder="GOOG"> </div>
-         <div class="mb-2 mr-sm-2">  <input class="form-control" id="ticker5" placeholder="AAPL"> </div>
+    <select style="width:100%;"class="" id="tickers" multiple></select>
       </div>
   </div>
 
@@ -38,6 +40,9 @@
         </div>
       </div>
       <button class="btn btn-primary" id="submitButton">Submit</button>
+
+
+
     </form>
 
       
@@ -54,6 +59,32 @@
 </script>
 
 
+<script type="text/javascript">
+  
+  var tickers = {{ tickers| tojson }}
+
+  var options = {
+              maxItems: null, 
+                valueField: 'title',
+                 labelField: 'title',
+                  searchField: 'title',
+                  options: tickers}
+
+  $(function() {
+    $('#tickers').selectize(options);
+  });
+
+
+
+</script>
+
+
+
+
 </div>
+
+
+
+
 
 {% endblock %}

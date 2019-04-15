@@ -1,5 +1,7 @@
 $( document ).ready(function() {
 
+	console.log("hello, world");
+
 	$('form').on('submit', function(event) {
 
 		var div = document.createElement("div");
@@ -9,15 +11,12 @@ $( document ).ready(function() {
 		for ( i=0; i < el.length; i++ ) {
 			div.appendChild(el[i]);
 		}
-
+		console.log($("#tickers").val())
+		
 		$.ajax({
 			data : {
 				title : $("#title").val(),
-				ticker1 : $("#ticker1").val(),
-				ticker2 : $("#ticker2").val(),
-				ticker3 : $("#ticker3").val(),
-				ticker4 : $("#ticker4").val(),
-				ticker5 : $("#ticker5").val(),
+				tickers: $("#tickers").val(),
 				post : div.innerHTML
 
 			},

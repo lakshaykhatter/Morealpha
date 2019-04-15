@@ -78,7 +78,7 @@ def register():
 @login_required
 def user(username):
 	user = User.query.filter_by(username=username).first_or_404()
-	posts = Post.query.filter_by(user_id=user.id).limit(5).all()
+	posts = Post.query.filter_by(user_id=user.id).all()
 	posts = None if posts == [] else posts
 	tickers = user.tickers
 
@@ -128,22 +128,17 @@ def checkTickers(tickers):
 @login_required
 def createpost():
 	if request.method == "POST":
-		
+		print(request.form)
 		title = request.form['title']
 		body = request.form['post']
-		ticker1 = request.form['ticker1']
-		ticker2 = request.form['ticker2']
-		ticker3 = request.form['ticker3']
-		ticker4 = request.form['ticker4']
-		ticker5 = request.form['ticker5']
-
-		tickers = [ticker1, ticker2, ticker3, ticker4, ticker5]
+		tickers = request.form.getlist('tickers[]')
 		
+		print(tickers)
 		tickers = checkTickers(tickers)
 
 		if title == "":
 			return jsonify({'error': "Please add a title"}) 
-		elif ticker1 == "" or tickers == []:
+		elif tickers == []:
 			return jsonify({'error': "Please enter a valid ticker at the first input"})
 		elif body == "":
 			return jsonify({'error': "Please create a post"})
@@ -162,7 +157,8 @@ def createpost():
 
 		return jsonify({'success': "Congratulations you've created a post"})
 
-	return render_template('createpost.html')
+	tickerList = [{"title":str(ticker.symbol)} for ticker in Ticker.query.all()]
+	return render_template('createpost.html', tickers=tickerList)
 
 @app.route('/post/<post>')
 def post(post):
