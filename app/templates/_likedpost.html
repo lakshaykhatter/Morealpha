@@ -1,6 +1,8 @@
 <div class="p-4 mb-3 bg-light rounded"> 
 <h4 class="blog-post-title"><a href="{{url_for('post', post=likedpost.post.id)}}">{{likedpost.post.title}}</a></h4>
-<p class="blog-post-meta"><a href="{{ url_for('user', username=likedpost.post.author.username)}}">{{likedpost.post.author.first_name}} {{likedpost.post.author.last_name}}</a> - {{ likedpost.post.timestamp.strftime('%Y-%m-%d')}}</p>  
+<p class="blog-post-meta"><a href="{{ url_for('user', username=likedpost.post.author.username)}}">{{likedpost.post.author.first_name}} {{likedpost.post.author.last_name}}
+
+</a> - {{ likedpost.post.timestamp.strftime('%Y-%m-%d')}}</p>  
 
 {% for ticker in likedpost.post.tickers %}
 <a href="{{url_for('ticker', ticker=ticker.symbol)}}" class="badge badge-light">{{ticker.symbol}}</a>

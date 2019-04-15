@@ -65,15 +65,17 @@
           </div>
         </div>
         {% for comment in post.comments.all() %}
+        <div class="container"> 
         <div class="media mb-4">
           <img class="d-flex mr-3 rounded-circle" style="height: 50px"src="{{url_for('static', filename='profile_pics/' + comment.author.image_file )}}" alt="">
           <div class="media-body">
             <h5 class="mt-0"> </h5>
               <a href="{{ url_for('user', username=comment.author.username)}}"> {{comment.author.first_name}} {{comment.author.last_name}}</a>
-
             <p>{{comment.body}}</p>
-            <hr>
+            
           </div>
+        </div>
+        <hr>
         </div>
           {% endfor %}
 
@@ -87,6 +89,6 @@
 
 <script src="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/js/medium-editor.min.js"></script>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/css/medium-editor.min.css" type="text/css" media="screen" charset="utf-8">
-
+<br>
 {% endblock %}
 
