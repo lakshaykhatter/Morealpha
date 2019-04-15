@@ -4,7 +4,8 @@
 
 		{% for ticker in post.tickers %}
 		<a href="{{url_for('ticker', ticker=ticker.symbol)}}" class="badge badge-light">{{ticker.symbol}}</a>
-		{% endfor %} 
+		{% endfor %}
+		
 	
 	{% if not current_user.is_anonymous %}
           <p>{% if current_user.has_liked_post(post) %}
@@ -18,5 +19,5 @@
 			
           </p>
         {%endif%}
-
+        <h6> {{ post.comments.count() }} Comments </h6>
 	</div>

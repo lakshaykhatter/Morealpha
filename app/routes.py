@@ -1,13 +1,14 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app
 from flask_login import current_user, login_user, logout_user, login_required
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
-from app.models import User, Post, Ticker
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, CommentForm
+from app.models import User, Post, Ticker, Comment
 from app import db
 from werkzeug.urls import url_parse
 import secrets
 from PIL import Image
 import os
+import bleach
 
 
 @app.route('/')
@@ -128,18 +129,15 @@ def checkTickers(tickers):
 @login_required
 def createpost():
 	if request.method == "POST":
-		print(request.form)
 		title = request.form['title']
 		body = request.form['post']
 		tickers = request.form.getlist('tickers[]')
-		
-		print(tickers)
 		tickers = checkTickers(tickers)
 
 		if title == "":
 			return jsonify({'error': "Please add a title"}) 
 		elif tickers == []:
-			return jsonify({'error': "Please enter a valid ticker at the first input"})
+			return jsonify({'error': "Please enter a valid ticker"})
 		elif body == "":
 			return jsonify({'error': "Please create a post"})
 
@@ -157,13 +155,20 @@ def createpost():
 
 		return jsonify({'success': "Congratulations you've created a post"})
 
-	tickerList = [{"title":str(ticker.symbol)} for ticker in Ticker.query.all()]
+	tickerList = [ {"title":str(ticker.symbol)} for ticker in Ticker.query.all()]
 	return render_template('createpost.html', tickers=tickerList)
 
-@app.route('/post/<post>')
+@app.route('/post/<post>', methods=["GET", "POST"])
 def post(post):
 	post = Post.query.filter_by(id=post).first_or_404()
-	return render_template("post.html", post=post)
+	form = CommentForm()
+	if form.validate_on_submit():
+		comment = Comment(body=form.body.data, post=post, author=current_user._get_current_object())
+		db.session.add(comment)
+		db.session.commit()
+		flash('Your comment has been published.')
+		redirect(request.referrer)
+	return render_template("post.html", post=post, form=form)
 
 
 @app.route('/follow/<ticker>')

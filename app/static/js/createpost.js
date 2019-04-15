@@ -11,8 +11,7 @@ $( document ).ready(function() {
 		for ( i=0; i < el.length; i++ ) {
 			div.appendChild(el[i]);
 		}
-		console.log($("#tickers").val())
-		
+
 		$.ajax({
 			data : {
 				title : $("#title").val(),

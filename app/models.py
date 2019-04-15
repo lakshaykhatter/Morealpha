@@ -2,6 +2,8 @@ from app import db, login
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+import bleach
+from markdown import markdown
 
 users_tickers = db.Table('users_tickers',
 	db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -26,6 +28,7 @@ class User(UserMixin, db.Model):
 	tickers = db.relationship("Ticker", secondary=users_tickers, backref="users")
 	liked = db.relationship('PostLike',foreign_keys='PostLike.user_id',backref='user', lazy='dynamic')
 	followed = db.relationship('User', secondary=followers, primaryjoin=(followers.c.follower_id == id), secondaryjoin=(followers.c.followed_id == id), backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+	comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)
@@ -100,7 +103,7 @@ class Post(db.Model):
 	title = db.Column(db.Text, index=True)
 	tickers = db.relationship("Ticker",secondary=posts_tickers, backref="posts")
 	likes = db.relationship('PostLike', backref='post', lazy='dynamic')
-
+	comments = db.relationship('Comment', backref='post', lazy='dynamic')
 	
 	def __repr__(self):
 		return '<Post {}>'.format(self.body)
@@ -114,6 +117,24 @@ class Ticker(db.Model):
 
 	def __repr__(self):
 		return '<Ticker: {}>'.format(self.name)
+
+class Comment(db.Model):
+	__tablename__ = 'comments'
+	id = db.Column(db.Integer, primary_key=True)
+	body = db.Column(db.Text)
+	body_html = db.Column(db.Text)
+	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow) 
+	disabled = db.Column(db.Boolean)
+	author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
+	@staticmethod
+	def on_changed_body(target, value, oldvalue, initiator): 
+		allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i', 'strong']
+		target.body_html = bleach.linkify(bleach.clean( markdown(value, output_format='html'), tags=allowed_tags, strip=True))
+
+db.event.listen(Comment.body, 'set', Comment.on_changed_body)
+
 
 @login.user_loader
 def load_user(id):
