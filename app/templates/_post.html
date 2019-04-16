@@ -1,11 +1,13 @@
  <div class="p-4 mb-3 bg-light rounded"> 
 	<h4 class="blog-post-title"><a href="{{url_for('post', post=post.id)}}">{{post.title}}</a></h4>
-	<p class="blog-post-meta"><a href="{{ url_for('user', username=post.author.username)}}"> {{post.author.first_name}} {{post.author.last_name}}</a> - {{ post.timestamp.strftime('%Y-%m-%d')}}</p>
-
+	<p class="blog-post-meta"><a href="{{ url_for('user', username=post.author.username)}}"> {{ post.author.first_name }} {{ post.author.last_name }}</a> - {{ post.timestamp.strftime('%Y-%m-%d')}}</p>
+	
+	
+	
 		{% for ticker in post.tickers %}
-		<a href="{{url_for('ticker', ticker=ticker.symbol)}}" class="badge badge-light">{{ticker.symbol}}</a>
+			<a href="{{url_for('ticker', ticker=ticker.symbol)}}" class="badge badge-light">{{ ticker.symbol }}</a>
 		{% endfor %}
-		
+
 	
 	{% if not current_user.is_anonymous %}
           <p>{% if current_user.has_liked_post(post) %}
@@ -18,6 +20,8 @@
            {% endif %}  
 			
           </p>
-        {%endif%}
-        <h6> {{ post.comments.count() }} Comments </h6>
+        {% endif %}
+
+        <div><p> {{ post.comments.count() }} Comments </p></div>
 	</div>
+        
