@@ -1,4 +1,5 @@
-$( document ).ready(function() {
+
+$( document ).ready(function() {	
 
 	$('form').on('submit', function(event) {
 
@@ -9,6 +10,8 @@ $( document ).ready(function() {
 		for ( i=0; i < el.length; i++ ) {
 			div.appendChild(el[i]);
 		}
+		var url = window.location.href;  
+		var id = url.split("/")[url.split("/").length-1];
 
 		$.ajax({
 			data : {
@@ -19,10 +22,11 @@ $( document ).ready(function() {
 			},
 
 			type : 'POST',
-			url : '/post'
+			url : '/editpost/' + id 
 		})
 		
 		.done(function(data) {
+			console.log(data)
 
 			if (data.error) {
 				$('#errorAlert').text(data.error).show();

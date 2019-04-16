@@ -15,7 +15,7 @@ import bleach
 @app.route('/index')
 def index():
 	page = request.args.get('page', 1, type=int)
-	posts = Post.query.order_by('timestamp').paginate(page, 10, False)
+	posts = Post.query.order_by('timestamp').paginate(page, 3, False)
 	next_url = url_for('index', page=posts.next_num) if posts.has_next else None
 	prev_url = url_for('index', page=posts.prev_num) if posts.has_prev else None
 	return render_template("index.html", posts=posts.items, next_url=next_url, prev_url=prev_url)
@@ -160,6 +160,7 @@ def createpost():
 	return render_template('createpost.html', tickers=tickerList)
 
 @app.route('/post/<post>', methods=["GET", "POST"])
+@login_required
 def post(post):
 	post = Post.query.filter_by(id=post).first_or_404()
 	form = CommentForm()
@@ -170,6 +171,50 @@ def post(post):
 		flash('Your comment has been published.')
 		redirect(request.referrer)
 	return render_template("post.html", post=post, form=form)
+
+
+
+@app.route('/editpost/<int:id>', methods=["GET", "POST"])
+def editPost(id):
+	p = Post.query.filter_by(id=id).first_or_404()
+	
+	if request.method == "GET":
+		
+		if current_user.id == p.author.id:
+			title = p.title
+			body = p.body
+			tickerList = [ {"title":str(ticker.symbol)} for ticker in Ticker.query.all()]
+			postTickers = [str(ticker.symbol) for ticker in p.tickers]
+			return render_template("editpost.html", title=title, body=body, tickers=tickerList, postTickers=postTickers)
+	
+	elif request.method == "POST":
+		title = request.form['title']
+		body = request.form['post']
+		tickers = request.form.getlist('tickers[]')
+		tickers = checkTickers(tickers)
+
+		if title == "":
+			return jsonify({'error': "Please add a title"}) 
+		elif tickers == []:
+			return jsonify({'error': "Please enter a valid ticker"})
+		elif body == "":
+			return jsonify({'error': "Please create a post"})
+
+		p.title = title
+		p.body = body
+		p.user_id = current_user.id
+		p.tickers = [] 
+		
+		for tick in tickers:
+			p.tickers.append(tick)
+
+		db.session.add(p)
+		db.session.commit()
+
+
+		return jsonify({'success': "Congratulations you've updated your post"})
+
+	return redirect(url_for('user', username=current_user.username))
 
 
 @app.route('/follow/<ticker>')
