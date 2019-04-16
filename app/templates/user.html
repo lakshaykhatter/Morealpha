@@ -17,7 +17,7 @@
               <br>
             {%endif%}
             <br>
-            <p> <a href="{{url_for('followLookup', username=user.username, action='following')}}">{{ user.followed.count() }} Following</a> 
+            <p> <a href="{{url_for('followLookup', username=user.username, action='following')}}">{{ user.followed.count() }} Following</a>
               <a href="{{url_for('followLookup', username=user.username, action='followers')}}"> {{ user.followers.count() }} Followers</a></p>
 
           </div>

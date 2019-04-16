@@ -14,32 +14,12 @@
 </div>
 {% endif %}
 
-<div class="row mb-2">
+<div class="row">
 
 
     {% for post in posts %}
-      <div class="col-md-6">
-        <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-          <div class="col p-4 d-flex flex-column position-static">
-            <h4 class="mb-0"> <a href="{{url_for('post', post=post.id )}}" >{{ post.title }}</a> </h4><br>
-            <div class="mb-1 text-muted">
-               {% for ticker in post.tickers %}
-                <a href="{{url_for('ticker', ticker=ticker.symbol)}}" class="badge badge-light">{{ticker.symbol}}</a>                
-                {% endfor %}
-            </div> <br>
-            <p class="card-text mb-auto"><a href="{{ url_for('user', username=post.author.username)}}">{{post.author.first_name}} {{post.author.last_name}}<a> </p>
-            {% if not current_user.is_anonymous %}
-            <p> 
-              {% if current_user.has_liked_post(post) %}
-                  <h6> <a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a> - {{ post.likes.count() }} likes </h6>
-             {% else %}
-                  <h6>  <a href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a> - {{ post.likes.count() }} likes </h6>
-             {% endif %}  
-            </p>
-            {%endif%}
-            <p>{{post.comments.count()}} Comments</p>
-          </div>
-        </div>
+      <div class="container"> 
+         {% include '_post.html' %}
       </div>
 
     {% endfor %}
