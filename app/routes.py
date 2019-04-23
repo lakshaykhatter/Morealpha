@@ -156,7 +156,7 @@ def createpost():
 
 		return jsonify({'success': "Congratulations you've created a post"})
 
-	tickerList = [ {"title":str(ticker.symbol)} for ticker in Ticker.query.all()]
+	tickerList = [ { "title" : str(ticker.symbol) } for ticker in Ticker.query.all()]
 	return render_template('createpost.html', tickers=tickerList)
 
 @app.route('/post/<post>', methods=["GET", "POST"])
@@ -175,7 +175,9 @@ def post(post):
 
 
 @app.route('/editpost/<int:id>', methods=["GET", "POST"])
+@login_required
 def editPost(id):
+	
 	p = Post.query.filter_by(id=id).first_or_404()
 	
 	if request.method == "GET":
@@ -188,6 +190,7 @@ def editPost(id):
 			return render_template("editpost.html", title=title, body=body, tickers=tickerList, postTickers=postTickers)
 	
 	elif request.method == "POST":
+
 		title = request.form['title']
 		body = request.form['post']
 		tickers = request.form.getlist('tickers[]')

@@ -86,10 +86,8 @@ var control = $select[0].selectize;
     }
 
   // Set body
-
-$(".ql-editor").append(`{{ body | safe }}`);
-
-
+var editor = document.getElementsByClassName('ql-editor')
+editor[0].innerHTML = `{{ body | safe }}`
 
 </script>
 
